@@ -35,5 +35,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
-          name: Tendaji
+          name: OBSVad
           path: dist/OBSVad/OBSVad.exe

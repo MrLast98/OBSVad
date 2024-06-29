@@ -3,6 +3,8 @@
 
 This application leverages Voice Activity Detection (VAD) to trigger the visibility of two or three image sources in OBS (Open Broadcaster Software) while speaking. It communicates with OBS through the OBS WebSocket, providing dynamic control over your streaming visuals based on audio input.
 
+[![OBSVAD Windows Build](https://github.com/MrLast98/OBSVad/actions/workflows/python-app.yml/badge.svg)](https://github.com/MrLast98/OBSVad/actions/workflows/python-app.yml)
+
 ## Features
 
 - Dynamically show/hide image sources in OBS based on voice activity.

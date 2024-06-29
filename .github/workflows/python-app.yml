@@ -20,6 +20,7 @@ jobs:
         uses: actions/setup-python@v2
         with:
           python-version: '3.12.x'
+          cache: 'pip'
       - name: Install action dependencies
         run: pip install flake8 pyinstaller
       - name: Install application dependencies
@@ -30,6 +31,8 @@ jobs:
           flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Build executable
         run: pyinstaller obs_vad.spec
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
       - name: Create Release
         uses: actions/create-release@v1
         id: create_release
@@ -37,7 +40,7 @@ jobs:
           draft: false
           prerelease: false
           release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{ github.ref }}
+          tag_name: ${{ github. }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: upload windows artifact

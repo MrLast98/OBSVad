@@ -38,7 +38,7 @@ jobs:
       - name: Set IS_SEMANTIC_VERSION
         id: set_env
         run: |
-          if (${{ steps.determine_ref.outputs.refType }} == 'tag') {
+          if (${{ steps.determine_ref.outputs.refType }} -eq 'tag') {
             echo "IS_SEMANTIC_VERSION=true"
           } else {
             echo "IS_SEMANTIC_VERSION=false"

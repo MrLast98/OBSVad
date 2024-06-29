@@ -51,4 +51,3 @@ jobs:
           asset_path: ./dist/OBSVad.exe
           asset_name: OBSVad.exe
           asset_content_type: application/octet-stream
-        if: startsWith(github.ref, 'refs/tags/')

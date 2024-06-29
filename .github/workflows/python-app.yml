@@ -28,39 +28,7 @@ jobs:
           flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Build executable
         run: pyinstaller obs_vad.spec
-      - name: Determine Reference Type
-        id: determine_ref
-        uses: actions/github-script@v5
-        with:
-          script: |
-            const refType = `${{ github.ref }}`.startsWith('refs/tags/')? 'tag' : 'branch';
-            return { refType };
-      - name: Set IS_SEMANTIC_VERSION
-        id: set_env
-        run: |
-          if (${{ steps.determine_ref.outputs.refType }} -eq 'tag') {
-            echo "IS_SEMANTIC_VERSION=true"
-          } else {
-            echo "IS_SEMANTIC_VERSION=false"
-          }
-        shell: pwsh
-      - name: Create Release
-        if: env.IS_SEMANTIC_VERSION == 'true'
-        uses: actions/create-release@v1
+      - name: Release GitHub Actions
+        uses: technote-space/release-github-actions@v8.0.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-      - name: Upload Release Asset
-        if: env.IS_SEMANTIC_VERSION == 'true'
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/OBSVad.exe
-          asset_name: OBSVad.exe
-          asset_content_type: application/octet-stream

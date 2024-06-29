@@ -33,6 +33,8 @@ jobs:
         run: pyinstaller obs_vad.spec
       - name: Set env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Echo env
+        run: echo $RELEASE_VERSION
       - name: Create Release
         uses: actions/create-release@v1
         id: create_release
@@ -40,7 +42,7 @@ jobs:
           draft: false
           prerelease: false
           release_name: ${{ steps.version.outputs.version }}
-          tag_name: ${{$RELEASE_VERSION}}
+          tag_name: ${{ env.RELEASE_VERSION}}
         env:
           GITHUB_TOKEN: ${{ github.token }}
       - name: upload windows artifact

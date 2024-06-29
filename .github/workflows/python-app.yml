@@ -28,18 +28,24 @@ jobs:
           flake8 --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
       - name: Build executable
         run: pyinstaller obs_vad.spec
+      - name: Determine Reference Type
+        id: determine_ref
+        uses: actions/github-script@v5
+        with:
+          script: |
+            const refType = `${{ github.ref }}`.startsWith('refs/tags/')? 'tag' : 'branch';
+            return { refType };
       - name: Set IS_SEMANTIC_VERSION
         id: set_env
         run: |
-          if ($env:GITHUB_REF -match "^refs/tags/[0-9]+\.[0-9]+\.[0-9]+$") {
-            Write-Host "##[set-output name=IS_SEMANTIC_VERSION;isOutputVariable=true]true"
+          if (${{ steps.determine_ref.outputs.refType }} == 'tag') {
+            echo "IS_SEMANTIC_VERSION=true"
           } else {
-            Write-Host "##[set-output name=IS_SEMANTIC_VERSION;isOutputVariable=true]false"
+            echo "IS_SEMANTIC_VERSION=false"
           }
-      - name: Debug IS_SEMANTIC_VERSION
-        run: echo "IS_SEMANTIC_VERSION=${{ steps.set_env.outputs.IS_SEMANTIC_VERSION }}"
+        shell: pwsh
       - name: Create Release
-        if: steps.set_env.outputs.IS_SEMANTIC_VERSION == 'true'
+        if: env.IS_SEMANTIC_VERSION == 'true'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,7 +55,7 @@ jobs:
           draft: false
           prerelease: false
       - name: Upload Release Asset
-        if: steps.set_env.outputs.IS_SEMANTIC_VERSION == 'true'
+        if: env.IS_SEMANTIC_VERSION == 'true'
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

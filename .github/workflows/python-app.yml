@@ -4,7 +4,7 @@ on:
   push:
     branches: [ 'master' ]
     tags:
-      - '*.*.*'  # This pattern triggers the workflow for tags matching the semantic versioning pattern
+      - '*.*.*'
 
 permissions:
   contents: read
@@ -36,6 +36,8 @@ jobs:
           } else {
             Write-Host "##[set-output name=IS_SEMANTIC_VERSION;isOutputVariable=true]false"
           }
+      - name: Debug IS_SEMANTIC_VERSION
+        run: echo "IS_SEMANTIC_VERSION=${{ steps.set_env.outputs.IS_SEMANTIC_VERSION }}"
       - name: Create Release
         if: steps.set_env.outputs.IS_SEMANTIC_VERSION == 'true'
         uses: actions/create-release@v1
@@ -53,6 +55,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./dist/OBSVad.exe
+          asset_path:./dist/OBSVad.exe
           asset_name: OBSVad.exe
           asset_content_type: application/octet-stream
